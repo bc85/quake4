@@ -156,10 +156,12 @@ void rvCTF_AssaultPoint::Event_Touch( idEntity *activator, trace_t *trace ) {
 			if( toMarine->IsType( rvItemCTFFlag::GetClassType() ) ) {
 				owner = TEAM_MARINE;
 				gameLocal.Printf("Assault point %s captured by marines!\n", name.c_str());
+				gameLocal.mpGame.AddChatLine("Assault point %s captured by %s of marines!\n", name.c_str(), player->GetUserInfo()->GetString( "ui_name", "player" ));
 			} else if( toMarine->IsType( rvCTF_AssaultPoint::GetClassType() ) ) {
 				if( static_cast<rvCTF_AssaultPoint*>(toMarine.GetEntity())->owner == TEAM_MARINE ) {
 					owner = TEAM_MARINE;
 					gameLocal.Printf("Assault point %s captured by marines!\n", name.c_str());
+					gameLocal.mpGame.AddChatLine("Assault point %s captured by %s of marines!\n", name.c_str(), player->GetUserInfo()->GetString( "ui_name", "player" ));
 				}
 			}
 			break;
@@ -172,10 +174,12 @@ void rvCTF_AssaultPoint::Event_Touch( idEntity *activator, trace_t *trace ) {
 			if( toStrogg->IsType( rvItemCTFFlag::GetClassType() ) ) {
 				owner = TEAM_STROGG;
 				gameLocal.Printf("Assault point %s captured by strogg!\n", name.c_str());
+				gameLocal.mpGame.AddChatLine("Assault point %s captured by %s of strogg!\n", name.c_str(), player->GetUserInfo()->GetString( "ui_name", "player" ));
 			} else if( toStrogg->IsType( rvCTF_AssaultPoint::GetClassType() ) ) {
 				if( static_cast<rvCTF_AssaultPoint*>(toStrogg.GetEntity())->owner == TEAM_STROGG ) {
 					owner = TEAM_STROGG;
 					gameLocal.Printf("Assault point %s captured by strogg!\n", name.c_str());
+					gameLocal.mpGame.AddChatLine("Assault point %s captured by %s of strogg!\n", name.c_str(), player->GetUserInfo()->GetString( "ui_name", "player" ));
 				}
 			}			
 			break;

@@ -695,6 +695,13 @@ Cmd_Kill_f
 =================
 */
 void Cmd_Kill_f( const idCmdArgs &args ) {
+	common->Printf("testing by Brandon in the kill command.\n");
+	//gameRenderWorld->DrawText("testing by Brandon in the kill command.", pos, 0.5f, colorWhite, gameLocal.GetLocalPlayer()->viewAxis, 1, lifetime);
+	//gameRenderWorld->DrawText( ent->name.c_str(), center - up, 0.1f, colorWhite * frac, axis, 1 );
+	//idVec3 eyePosition = gameLocal.GetLocalPlayer()->GetEyePosition();
+	//gameRenderWorld->DrawText("Screen testing by Brandon in the kill command.", eyePosition, 0.1f, colorWhite, gameLocal.GetLocalPlayer()->viewAngles.ToMat3(), 16);
+	renderSystem->DrawSmallStringExt(25, 25, "testing by Brandon", colorWhite, true, declManager->FindMaterial( "textures/bigchars" ));
+	gameLocal.mpGame.AddChatLine("testing");
 	idPlayer	*player;
 
 	if ( gameLocal.isMultiplayer ) {
@@ -1250,6 +1257,7 @@ Toggles flashlight on specified entity
 ==================
 */
 void Cmd_Flashlight_f( const idCmdArgs &args ) {
+	common->Printf("testing by Brandon");
 	if ( gameLocal.IsMultiplayer() || !gameLocal.GetLocalPlayer() || !gameLocal.CheatsOk( false ) ) {
 		return;
 	}
@@ -3052,6 +3060,84 @@ void Cmd_ListMaps_f( const idCmdArgs& args ) {
 	gameLocal.mpGame.ListMaps();
 }
 
+void Cmd_RequestPowerup_f( const idCmdArgs &args ) {
+	//if ( gameLocal.time > gameLocal.GetLocalPlayer()->minRespawnTime )
+	if ( gameLocal.time > gameLocal.GetLocalPlayer()->nextPowerupTime )
+	{
+		// nextPowerupTime
+		int rand = gameLocal.random.RandomInt(5);
+		switch (rand) {
+			case 0:
+				gameLocal.mpGame.AddChatLine("You were not awarded a powerup. Better luck next time.");
+				break;
+			case 1:
+				//gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_QUADDAMAGE, SEC2MS( 30.0f ) );
+				gameLocal.GetLocalPlayer()->awardedPowerup = 1;
+				gameLocal.mpGame.AddChatLine("You've received the damage powerup.");
+				break;
+			case 2:
+				//gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_INVISIBILITY, SEC2MS( 30.0f ) );
+				gameLocal.GetLocalPlayer()->awardedPowerup = 2;
+				gameLocal.mpGame.AddChatLine("You've received the invisibility powerup.");
+				break;
+			case 3:
+				//gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_REGENERATION, SEC2MS( 30.0f ) );
+				gameLocal.GetLocalPlayer()->awardedPowerup = 3;
+				gameLocal.mpGame.AddChatLine("You've received the regeneration powerup.");
+				break;
+			case 4:
+				//gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_HASTE, SEC2MS( 30.0f ) );
+				gameLocal.GetLocalPlayer()->awardedPowerup = 4;
+				gameLocal.mpGame.AddChatLine("You've received the haste powerup.");
+				break;
+			case 5:
+				//gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_AMMOREGEN, -1 );
+				gameLocal.GetLocalPlayer()->awardedPowerup = 5;
+				gameLocal.mpGame.AddChatLine("You've received the armor powerup.");
+				break;
+		}
+		//gameLocal.mpGame.AddChatLine("testing custom command");
+		gameLocal.GetLocalPlayer()->nextPowerupTime = gameLocal.time + SEC2MS(30);
+	}
+	else
+	{
+		//gameLocal.mpGame.AddChatLine("You must wait %d seconds to obtain another poweup.", MS2SEC((gameLocal.GetLocalPlayer()->nextPowerupTime)-gameLocal.time));
+		gameLocal.mpGame.AddChatLine("You must wait %d seconds to obtain another poweup.", ((gameLocal.GetLocalPlayer()->nextPowerupTime)-gameLocal.time)/1000);
+	}
+	common->Printf("gameLocal.time: %d\n", gameLocal.time);
+	common->Printf("30 seconds in milliseconds: %d\n", SEC2MS(30));
+	common->Printf("nextPowerupTime: %d\n", gameLocal.GetLocalPlayer()->nextPowerupTime);
+}
+
+void Cmd_UsePowerup_f( const idCmdArgs &args ) {
+	switch (gameLocal.GetLocalPlayer()->awardedPowerup) {
+		case 0:
+			gameLocal.mpGame.AddChatLine("You currently don't have any powerups.");
+			break;
+		case 1:
+			gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_QUADDAMAGE, SEC2MS( 30.0f ) );
+			gameLocal.mpGame.AddChatLine("Damage powerup used.");
+			break;
+		case 2:
+			gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_INVISIBILITY, SEC2MS( 30.0f ) );
+			gameLocal.mpGame.AddChatLine("Invisibility powerup used.");
+			break;
+		case 3:
+			gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_REGENERATION, SEC2MS( 30.0f ) );
+			gameLocal.mpGame.AddChatLine("Regeneration powerup used.");
+			break;
+		case 4:
+			gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_HASTE, SEC2MS( 30.0f ) );
+			gameLocal.mpGame.AddChatLine("Haste powerup used.");
+			break;
+		case 5:
+			gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_AMMOREGEN, -1 );
+			gameLocal.mpGame.AddChatLine("Armor powerup used.");
+			break;
+	}
+	gameLocal.GetLocalPlayer()->awardedPowerup = 0;
+}
+
 /*
 =================
 idGameLocal::InitConsoleCommands
@@ -3246,6 +3332,8 @@ void idGameLocal::InitConsoleCommands( void ) {
 // squirrel: Mode-agnostic buymenus
 	cmdSystem->AddCommand( "buyMenu",				Cmd_ToggleBuyMenu_f,		CMD_FL_GAME,				"Toggle buy menu (if in a buy zone and the game type supports it)" );
 	cmdSystem->AddCommand( "buy",					Cmd_BuyItem_f,				CMD_FL_GAME,				"Buy an item (if in a buy zone and the game type supports it)" );
+	cmdSystem->AddCommand( "requestPowerup",					Cmd_RequestPowerup_f,					CMD_FL_GAME,				"Requests a powerup" );
+	cmdSystem->AddCommand( "usePowerup",					Cmd_UsePowerup_f,					CMD_FL_GAME,				"Use a powerup" );
 // RITUAL END
 
 }

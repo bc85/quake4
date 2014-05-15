@@ -413,6 +413,8 @@ public:
 
 	float					handicap; // multiplier for damage/health
 
+	//int						nextPowerupTime;
+
 public:
 	CLASS_PROTOTYPE( idPlayer );
 
@@ -774,6 +776,9 @@ public:
 	bool					IsLocalClient( void ) const { return entityNumber == gameLocal.localClientNum || IsFakeClient(); }
 	bool					IsSpectatedClient( void ) const;
 	bool					IsWaitingForPredictAck( void ) const;
+
+	int						nextPowerupTime;
+	int						awardedPowerup;
 
 protected:
 	void					SetupHead( const char* modelKeyName = "", idVec3 headOffset = idVec3(0, 0, 0) );

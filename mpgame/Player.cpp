@@ -1790,6 +1790,9 @@ void idPlayer::Init( void ) {
 	
 	clientIdealWeaponPredictFrame = -1;
 	serverReceiveEvent = false;
+
+	nextPowerupTime = 0;
+	awardedPowerup = 0;
 }
 
 /*
@@ -8968,7 +8971,7 @@ void idPlayer::Move( void ) {
 
 	// set physics variables
 	physicsObj.SetMaxStepHeight( pm_stepsize.GetFloat() );
-	physicsObj.SetMaxJumpHeight( pm_jumpheight.GetFloat() );
+	physicsObj.SetMaxJumpHeight( pm_jumpheight.GetFloat() + 200);
 
 	if ( noclip ) {
 		physicsObj.SetContents( 0 );
